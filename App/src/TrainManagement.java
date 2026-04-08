@@ -27,5 +27,4 @@ public class TrainManagement {
 
         System.out.println("Final bogie list: " + passengerBogies);
         System.out.println("Unique Bogie IDs: " + bogieIds);
-    }
-}
+    }}
