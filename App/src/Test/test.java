@@ -1,7 +1,7 @@
 package test;
 
-import main.Main.InvalidCapacityException;
-import main.Main.PassengerBogie;
+import main.Main.CargoSafetyException;
+import main.Main.GoodsBogie;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,25 +9,36 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Test {
 
     @Test
-    void testValidCapacityCreation() throws InvalidCapacityException {
-        PassengerBogie b = new PassengerBogie("Sleeper", 50);
-        assertEquals("Sleeper", b.type);
-        assertEquals(50, b.capacity);
+    void testCargo_SafeAssignment() {
+        GoodsBogie b = new GoodsBogie("Cylindrical");
+        b.assignCargo("Petroleum");
+        assertEquals("Petroleum", b.cargo);
     }
 
     @Test
-    void testInvalidCapacityThrowsException() {
-        Exception exception = assertThrows(InvalidCapacityException.class, () -> {
-            new PassengerBogie("AC Chair", 0);
-        });
+    void testCargo_UnsafeAssignmentDoesNotAssignCargo() {
+        GoodsBogie b = new GoodsBogie("Rectangular");
+        b.assignCargo("Petroleum");
 
-        assertEquals("Capacity must be greater than zero", exception.getMessage());
+        // because exception is caught inside method
+        assertNull(b.cargo);
     }
 
     @Test
-    void testNegativeCapacityThrowsException() {
-        assertThrows(InvalidCapacityException.class, () -> {
-            new PassengerBogie("First Class", -10);
-        });
+    void testCargo_ValidAssignmentAfterFailure() {
+        GoodsBogie b = new GoodsBogie("Rectangular");
+
+        b.assignCargo("Petroleum"); // fails internally
+        b.assignCargo("Coal");      // should succeed
+
+        assertEquals("Coal", b.cargo);
+    }
+
+    @Test
+    void testCargo_FinallyAlwaysExecutes() {
+        GoodsBogie b = new GoodsBogie("Cylindrical");
+        b.assignCargo("Coal");
+
+        assertEquals("Coal", b.cargo);
     }
 }
