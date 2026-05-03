@@ -1,44 +1,54 @@
 package test;
 
-import main.Main.CargoSafetyException;
-import main.Main.GoodsBogie;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Test {
 
-    @Test
-    void testCargo_SafeAssignment() {
-        GoodsBogie b = new GoodsBogie("Cylindrical");
-        b.assignCargo("Petroleum");
-        assertEquals("Petroleum", b.cargo);
+    int[] bubbleSort(int[] arr) {
+        int[] a = arr.clone();
+
+        for (int i = 0; i < a.length - 1; i++) {
+            for (int j = 0; j < a.length - i - 1; j++) {
+                if (a[j] > a[j + 1]) {
+                    int temp = a[j];
+                    a[j] = a[j + 1];
+                    a[j + 1] = temp;
+                }
+            }
+        }
+        return a;
     }
 
     @Test
-    void testCargo_UnsafeAssignmentDoesNotAssignCargo() {
-        GoodsBogie b = new GoodsBogie("Rectangular");
-        b.assignCargo("Petroleum");
-
-        // because exception is caught inside method
-        assertNull(b.cargo);
+    void testSort_BasicSorting() {
+        int[] input = {72, 56, 24, 70, 60};
+        int[] expected = {24, 56, 60, 70, 72};
+        assertArrayEquals(expected, bubbleSort(input));
     }
 
     @Test
-    void testCargo_ValidAssignmentAfterFailure() {
-        GoodsBogie b = new GoodsBogie("Rectangular");
-
-        b.assignCargo("Petroleum"); // fails internally
-        b.assignCargo("Coal");      // should succeed
-
-        assertEquals("Coal", b.cargo);
+    void testSort_AlreadySortedArray() {
+        int[] input = {24, 56, 60, 70, 72};
+        assertArrayEquals(input, bubbleSort(input));
     }
 
     @Test
-    void testCargo_FinallyAlwaysExecutes() {
-        GoodsBogie b = new GoodsBogie("Cylindrical");
-        b.assignCargo("Coal");
+    void testSort_DuplicateValues() {
+        int[] input = {72, 56, 56, 24};
+        int[] expected = {24, 56, 56, 72};
+        assertArrayEquals(expected, bubbleSort(input));
+    }
 
-        assertEquals("Coal", b.cargo);
+    @Test
+    void testSort_SingleElementArray() {
+        int[] input = {50};
+        assertArrayEquals(input, bubbleSort(input));
+    }
+
+    @Test
+    void testSort_AllEqualValues() {
+        int[] input = {40, 40, 40};
+        assertArrayEquals(input, bubbleSort(input));
     }
 }
