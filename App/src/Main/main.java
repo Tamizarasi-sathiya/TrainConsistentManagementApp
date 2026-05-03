@@ -1,44 +1,64 @@
-package main;
+package test;
 
-import java.util.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class Main {
+import java.util.regex.Pattern;
 
-    static class GoodsBogie {
+public class Test {
 
-        String type;
-        String cargo;
-
-        GoodsBogie(String type, String cargo) {
-            this.type = type;
-            this.cargo = cargo;
-        }
+    boolean isValidTrainID(String id) {
+        return Pattern.matches("TRN-\\d{4}", id);
     }
 
-    public static void main(String[] args) {
+    boolean isValidCargoCode(String code) {
+        return Pattern.matches("PET-[A-Z]{2}", code);
+    }
 
-        System.out.println("=====================================");
-        System.out.println("   UC12 - Safety Compliance Check");
-        System.out.println("=====================================\n");
+    @Test
+    void testRegex_ValidTrainID() {
+        assertTrue(isValidTrainID("TRN-1234"));
+    }
 
-        List<GoodsBogie> bogies = new ArrayList<>();
+    @Test
+    void testRegex_InvalidTrainIDFormat() {
+        assertFalse(isValidTrainID("TRAIN12"));
+        assertFalse(isValidTrainID("TRN12A"));
+        assertFalse(isValidTrainID("1234-TRN"));
+    }
 
-        bogies.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        bogies.add(new GoodsBogie("Open", "Coal"));
-        bogies.add(new GoodsBogie("Box", "Grain"));
+    @Test
+    void testRegex_ValidCargoCode() {
+        assertTrue(isValidCargoCode("PET-AB"));
+    }
 
-        boolean isSafe = bogies.stream()
-                .allMatch(b ->
-                        !b.type.equals("Cylindrical") ||
-                                b.cargo.equals("Petroleum")
-                );
+    @Test
+    void testRegex_InvalidCargoCodeFormat() {
+        assertFalse(isValidCargoCode("PET-ab"));
+        assertFalse(isValidCargoCode("PET123"));
+        assertFalse(isValidCargoCode("AB-PET"));
+    }
 
-        if (isSafe) {
-            System.out.println("Train is SAFE");
-        } else {
-            System.out.println("Train is NOT SAFE");
-        }
+    @Test
+    void testRegex_TrainIDDigitLengthValidation() {
+        assertFalse(isValidTrainID("TRN-123"));
+        assertFalse(isValidTrainID("TRN-12345"));
+    }
 
-        System.out.println("\nUC12 safety check completed...");
+    @Test
+    void testRegex_CargoCodeUppercaseValidation() {
+        assertFalse(isValidCargoCode("PET-ab"));
+    }
+
+    @Test
+    void testRegex_EmptyInputHandling() {
+        assertFalse(isValidTrainID(""));
+        assertFalse(isValidCargoCode(""));
+    }
+
+    @Test
+    void testRegex_ExactPatternMatch() {
+        assertFalse(isValidTrainID("TRN-1234XYZ"));
+        assertFalse(isValidCargoCode("PET-AB12"));
     }
 }
